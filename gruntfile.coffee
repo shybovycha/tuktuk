@@ -1,7 +1,7 @@
 module.exports = (grunt) ->
 
   grunt.initConfig
-    pkg: grunt.file.readJSON "site/package/component.json"
+    pkg: grunt.file.readJSON "component.json"
 
     meta:
       file: "tuktuk"
@@ -14,26 +14,36 @@ module.exports = (grunt) ->
         """
 
     source:
-      coffee: ["sources/tuktuk.coffee", "sources/tuktuk.*.coffee"],
-      stylus: [ "sources/stylesheets/tuktuk.*.styl"],
-      theme: [ "sources/themes/theme.default.styl"],
-      icons: "sources/componentes/lungo.icon/lungo.icon.css"
+      coffee: [
+        "sources/tuktuk.coffee", 
+        "sources/tuktuk.*.coffee"],
+      stylus: [ 
+        "sources/stylesheets/tuktuk.*.styl"],
+      theme_default: [ 
+        "sources/themes/default/tuktuk.default.*.styl"],
+      theme_mock: [ 
+        "sources/themes/mock/tuktuk.mock.*.styl"],
+      icons: [
+        "sources/componentes/lungo.icon/lungo.icon.css"]
 
     coffee:
       engine: files: "<%= meta.endpoint %>/<%= meta.file %>.js" : ["<%= source.coffee %>"]
 
     stylus:
-      stylesheets:
-        options: compress: true
-        files: '<%= meta.endpoint %>/<%=meta.file%>.css': '<%= source.stylus %>'
-      theme:
-        options: compress: true
-        files: '<%= meta.endpoint %>/<%=meta.file%>.theme.css': '<%= source.theme %>'
+      engine:
+        options: compress: true, import: [ "__constants"]
+        files: "<%= meta.endpoint %>/<%=meta.file%>.css": "<%= source.stylus %>"
+      theme_default:
+        options: compress: true, import: [ "__constants"]
+        files: "<%= meta.endpoint %>/<%=meta.file%>.theme.default.css": "<%= source.theme_default %>"
+      theme_mock:
+        options: compress: true, import: [ "__constants"]
+        files: "<%= meta.endpoint %>/<%=meta.file%>.theme.mock.css": "<%= source.theme_mock %>"
 
     copy:
       main:
         files:
-          src: '<%= source.icons %>',
+          src: "<%= source.icons %>",
           dest: "<%= meta.endpoint %>/<%=meta.file%>.icons.css"
 
     watch:
@@ -41,8 +51,14 @@ module.exports = (grunt) ->
         files: ["<%= source.coffee %>"]
         tasks: ["coffee"]
       stylus:
-        files: ["<%= source.stylus %>", "<%= source.theme %>"]
-        tasks: ["stylus"]
+        files: ["<%= source.stylus %>"]
+        tasks: ["stylus:engine"]
+      theme_default:
+        files: ["<%= source.theme_default %>"]
+        tasks: ["stylus:theme_default"]
+      theme_mock:
+        files: ["<%= source.theme_mock %>"]
+        tasks: ["stylus:theme_mock"]
 
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-stylus"

@@ -1,5 +1,3 @@
-@import "__constants.styl"
-
 .button, button
   position: relative
   display: inline-block
@@ -40,6 +38,7 @@
   &.disabled, &:disabled
     cursor: default
 
+  // @todo: Loading buttons
   transition background-color 400ms
   &[data-loading]
     & > .icon
@@ -47,9 +46,7 @@
     & > .loading
       display: inline-block
       & > .container
-        -webkit-animation: loading 600ms  infinite linear
-        moz-animation:  loading 600ms  infinite linear
-        animation:  loading 600ms  infinite linear
+        animation loading 600ms infinite linear
 
 
     & > .loading
